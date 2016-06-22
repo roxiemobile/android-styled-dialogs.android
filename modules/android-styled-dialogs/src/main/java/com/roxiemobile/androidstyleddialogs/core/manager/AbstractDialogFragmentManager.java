@@ -67,7 +67,7 @@ public abstract class AbstractDialogFragmentManager
         builder .setCancelable(cancelable)
                 .setTitle(title != null ? title.toString() : null)
                 .setMessage(message.toString())
-                .setPositiveButtonText(R.string.acm__button_close)
+                .setPositiveButtonText(R.string.mdg__button_close)
                 .setDialogListener(new SimpleDialogListener(listener) {
                     @Override
                     public void onPositiveButtonClicked(int requestCode) {
@@ -94,7 +94,7 @@ public abstract class AbstractDialogFragmentManager
     }
 
     public void showErrorAlertDialog(int messageId, boolean cancelable) {
-        showAlertDialog(R.string.acm__title_alert_error, messageId, cancelable, null);
+        showAlertDialog(R.string.mdg__title_alert_error, messageId, cancelable, null);
     }
 
     public void showErrorAlertDialog(@NonNull CharSequence message) {
@@ -102,7 +102,7 @@ public abstract class AbstractDialogFragmentManager
     }
 
     public void showErrorAlertDialog(CharSequence message, boolean cancelable) {
-        showAlertDialog(mActivity.getString(R.string.acm__title_alert_error), message, cancelable, null);
+        showAlertDialog(mActivity.getString(R.string.mdg__title_alert_error), message, cancelable, null);
     }
 
 // MARK: - Methods: YesNoDialog
@@ -129,8 +129,8 @@ public abstract class AbstractDialogFragmentManager
         builder .setCancelable(cancelable)
                 .setTitle(title != null ? title.toString() : null)
                 .setMessage(message.toString())
-                .setPositiveButtonText(R.string.acm__button_yes)
-                .setNegativeButtonText(R.string.acm__button_no)
+                .setPositiveButtonText(R.string.mdg__button_yes)
+                .setNegativeButtonText(R.string.mdg__button_no)
                 .setDialogListener(new SimpleDialogListener(listener) {
                     @Override
                     public void onNegativeButtonClicked(int requestCode) {
