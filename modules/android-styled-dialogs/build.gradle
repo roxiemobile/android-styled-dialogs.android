@@ -10,8 +10,8 @@ android {
         minSdkVersion 14
         targetSdkVersion 24
         // Custom version based on [version: 2.3.3, build: 13]
-        versionCode 1
-        versionName '0.1.0'
+        versionCode 2
+        versionName '0.2.0'
     }
 
     compileOptions {
