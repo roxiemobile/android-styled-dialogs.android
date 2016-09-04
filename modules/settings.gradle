@@ -1,1 +1,1 @@
-include ':examples', ':android-styled-dialogs'
+include ':android-styled-dialogs', ':examples'
