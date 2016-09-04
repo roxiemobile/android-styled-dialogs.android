@@ -14,8 +14,8 @@ android {
         //noinspection GroovyAssignabilityCheck
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Custom version based on [version: 2.3.3, build: 13]
-        versionCode 4
-        versionName '0.2.2'
+        versionCode 5
+        versionName '0.2.3'
     }
 
     compileOptions {
