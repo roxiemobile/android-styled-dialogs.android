@@ -34,7 +34,7 @@ android {
 dependencies {
 
     // External dependencies
-    compile 'com.roxiemobile.android:material-design:0.2.3'
+    compile 'com.roxiemobile.android:material-design:0.2.4'
 
     // Test dependencies
     testCompile 'junit:junit:4.12'
