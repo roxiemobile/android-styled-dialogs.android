@@ -28,8 +28,9 @@ android {
 
 dependencies {
 
-    // External dependencies
-    compile 'com.roxiemobile.android:material-design:0.5.1'
+    // Material Design (Roxie Mobile)
+    final RXM_MATERIAL_DESIGN_VERSION = rootProject.ext.RXM_MATERIAL_DESIGN_VERSION
+    compile "com.roxiemobile.android:material-design:$RXM_MATERIAL_DESIGN_VERSION"
 
     // Test dependencies
     testCompile 'junit:junit:4.12'
