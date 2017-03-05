@@ -30,7 +30,7 @@ ext {
     // Shared Dependencies
     ANDROID_SUPPORT_VERSION = '25.2.0'
     JUNIT_VERSION = '4.12'
-    RXM_MATERIAL_DESIGN_VERSION = '0.6.0'
+    RXM_MATERIAL_DESIGN_VERSION = '0.7.0'
 }
 
 task clean(type: Delete) {
