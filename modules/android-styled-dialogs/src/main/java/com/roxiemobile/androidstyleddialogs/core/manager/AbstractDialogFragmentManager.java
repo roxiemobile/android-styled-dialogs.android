@@ -205,7 +205,7 @@ public abstract class AbstractDialogFragmentManager
         synchronized (mLock) {
 
             // Update existing ProgressDialog
-            if ((mActiveDialog instanceof ProgressDialogFragment) && (dialog instanceof ProgressDialogFragment)) {
+            if ((mActiveDialog instanceof ProgressDialogFragment) && (dialog instanceof ProgressDialogFragment) && dialog.isResumed()) {
 
                 ProgressDialogFragment dialogOld = (ProgressDialogFragment) mActiveDialog;
                 ProgressDialogFragment dialogNew = (ProgressDialogFragment) dialog;
