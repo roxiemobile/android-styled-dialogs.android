@@ -68,15 +68,12 @@ public abstract class AbstractDialogFragmentManager
                 .setTitle(title != null ? title.toString() : null)
                 .setMessage(message.toString())
                 .setPositiveButtonText(R.string.mdg__button_close)
-                .setDialogListener(new SimpleDialogListener(listener) {
+                .setDialogListener(new SimpleDialogListener(listener)
+                {
                     @Override
-                    public void onPositiveButtonClicked(int requestCode) {
-                        if (listener != null) {
-                            listener.onPositiveButtonClicked(requestCode);
-                        }
-                        else {
-                            dismissActiveDialog();
-                        }
+                    public void onDismiss(int requestCode) {
+                        super.onDismiss(requestCode);
+                        clearActiveDialog();
                     }
                 });
 
@@ -131,15 +128,12 @@ public abstract class AbstractDialogFragmentManager
                 .setMessage(message.toString())
                 .setPositiveButtonText(R.string.mdg__button_yes)
                 .setNegativeButtonText(R.string.mdg__button_no)
-                .setDialogListener(new SimpleDialogListener(listener) {
+                .setDialogListener(new SimpleDialogListener(listener)
+                {
                     @Override
-                    public void onNegativeButtonClicked(int requestCode) {
-                        if (listener != null) {
-                            listener.onNegativeButtonClicked(requestCode);
-                        }
-                        else {
-                            dismissActiveDialog();
-                        }
+                    public void onDismiss(int requestCode) {
+                        super.onDismiss(requestCode);
+                        clearActiveDialog();
                     }
                 });
 
@@ -182,7 +176,14 @@ public abstract class AbstractDialogFragmentManager
         builder .setCancelable(cancelable)
                 .setCancelableOnTouchOutside(false)
                 .setMessage(message.toString())
-                .setDialogListener(listener);
+                .setDialogListener(new ProgressDialogListener(listener)
+                {
+                    @Override
+                    public void onDismiss(int requestCode) {
+                        super.onDismiss(requestCode);
+                        clearActiveDialog();
+                    }
+                });
 
         // Show dialog
         showDialogOnUiThreadBlocking(builder.create());
@@ -205,7 +206,7 @@ public abstract class AbstractDialogFragmentManager
         synchronized (mLock) {
 
             // Update existing ProgressDialog
-            if ((mActiveDialog instanceof ProgressDialogFragment) && (dialog instanceof ProgressDialogFragment)) {
+            if ((mActiveDialog instanceof ProgressDialogFragment) && (dialog instanceof ProgressDialogFragment) && dialog.isResumed()) {
 
                 ProgressDialogFragment dialogOld = (ProgressDialogFragment) mActiveDialog;
                 ProgressDialogFragment dialogNew = (ProgressDialogFragment) dialog;
@@ -233,6 +234,11 @@ public abstract class AbstractDialogFragmentManager
                 }
             }
         }
+    }
+
+    // dismissing a dialog manually in onDismiss() leads to bugs when trying to replace a dialog with a new one
+    private void clearActiveDialog() {
+        mActiveDialog = null;
     }
 
 // MARK: - Variables
