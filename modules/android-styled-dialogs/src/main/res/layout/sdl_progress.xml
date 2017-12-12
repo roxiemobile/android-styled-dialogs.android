@@ -10,7 +10,7 @@
         />
 
     <TextView
-        android:id="@+id/sdl_message"
+        android:id="@+id/sdl_progress_message"
         style="@style/SDL.TextView.Message.Progress"
         tools:text="Message ..."
         />
