@@ -41,7 +41,7 @@ public class ProgressDialogFragment extends BaseDialogFragment {
     protected Builder build(Builder builder) {
         final LayoutInflater inflater = builder.getLayoutInflater();
         final View view = inflater.inflate(R.layout.sdl_progress, null, false);
-        final TextView tvMessage = (TextView) view.findViewById(R.id.sdl_message);
+        final TextView tvMessage = (TextView) view.findViewById(R.id.sdl_progress_message);
 
         tvMessage.setText(getArguments().getCharSequence(ARG_MESSAGE));
 
@@ -65,7 +65,7 @@ public class ProgressDialogFragment extends BaseDialogFragment {
         if (getView() == null)
             return;
 
-        TextView tvMessage = (TextView) getView().findViewById(R.id.sdl_message);
+        TextView tvMessage = (TextView) getView().findViewById(R.id.sdl_progress_message);
         if (tvMessage != null) {
             tvMessage.setText(message);
         }
@@ -76,7 +76,7 @@ public class ProgressDialogFragment extends BaseDialogFragment {
         if (getView() == null)
             return;
 
-        TextView tvMessage = (TextView) getView().findViewById(R.id.sdl_message);
+        TextView tvMessage = (TextView) getView().findViewById(R.id.sdl_progress_message);
         if (tvMessage != null) {
             tvMessage.setText(messageResId);
         }
@@ -87,7 +87,7 @@ public class ProgressDialogFragment extends BaseDialogFragment {
         CharSequence message = null;
 
         if (getView() != null) {
-            TextView tvMessage = (TextView) getView().findViewById(R.id.sdl_message);
+            TextView tvMessage = (TextView) getView().findViewById(R.id.sdl_progress_message);
 
             if (tvMessage != null) {
                 message = tvMessage.getText();
