@@ -16,7 +16,6 @@ import com.roxiemobile.androidstyleddialogs.ui.dialog.SimpleDialogListener;
 
 import java.util.UUID;
 
-import static com.roxiemobile.androidcommons.diagnostics.Require.requireTrue;
 import static com.roxiemobile.androidcommons.diagnostics.Require.requireNotNull;
 import static com.roxiemobile.androidcommons.diagnostics.Require.requireNull;
 
@@ -34,8 +33,8 @@ public abstract class AbstractDialogFragmentManager
 // MARK: - Methods
 
     public final void dismiss() {
-        // Dismiss active Dialog on main thread
-        ThreadUtils.runOnUiThreadBlocking(() -> replaceActiveDialog(null));
+        // Dismiss last known active Dialog
+        dismissDialogOnUiThreadBlocking(mLastKnownUniqueTag);
     }
 
     @Deprecated
@@ -82,8 +81,8 @@ public abstract class AbstractDialogFragmentManager
                 .setPositiveButtonText(R.string.mdg__button_close)
                 .setDialogListener(listener);
 
-        // Replace active Dialog on main thread
-        ThreadUtils.runOnUiThreadBlocking(() -> replaceActiveDialog(builder.create()));
+        // Replace last known Dialog
+        replaceDialogOnUiThreadBlocking(builder.create());
     }
 
 // MARK: - Methods: ErrorAlertDialog
@@ -121,7 +120,7 @@ public abstract class AbstractDialogFragmentManager
     public void showYesNoDialog(CharSequence title, @NonNull CharSequence message, boolean cancelable, final SimpleDialogListener listener) {
         requireNotNull(message, "message is null");
 
-        SimpleDialogFragment.SimpleDialogBuilder builder = SimpleDialogFragment.createBuilder(
+        final SimpleDialogFragment.SimpleDialogBuilder builder = SimpleDialogFragment.createBuilder(
                 mActivity, mActivity.getSupportFragmentManager());
 
         // Init dialog builder
@@ -132,8 +131,8 @@ public abstract class AbstractDialogFragmentManager
                 .setNegativeButtonText(R.string.mdg__button_no)
                 .setDialogListener(listener);
 
-        // Replace active Dialog on main thread
-        ThreadUtils.runOnUiThreadBlocking(() -> replaceActiveDialog(builder.create()));
+        // Replace last known Dialog
+        replaceDialogOnUiThreadBlocking(builder.create());
     }
 
 // MARK: - Methods: ProgressDialog
@@ -161,7 +160,7 @@ public abstract class AbstractDialogFragmentManager
     public void showProgressDialog(@NonNull CharSequence message, boolean cancelable, final ProgressDialogListener listener) {
         requireNotNull(message, "message is null");
 
-        ProgressDialogFragment.ProgressDialogBuilder builder = ProgressDialogFragment.createBuilder(
+        final ProgressDialogFragment.ProgressDialogBuilder builder = ProgressDialogFragment.createBuilder(
                 mActivity, mActivity.getSupportFragmentManager());
 
         // Init dialog builder
@@ -170,8 +169,8 @@ public abstract class AbstractDialogFragmentManager
                 .setMessage(message.toString())
                 .setDialogListener(listener);
 
-        // Replace active Dialog on main thread
-        ThreadUtils.runOnUiThreadBlocking(() -> replaceActiveDialog(builder.create()));
+        // Replace last known Dialog
+        replaceDialogOnUiThreadBlocking(builder.create());
     }
 
 // MARK: - Methods: CustomDialog
@@ -180,57 +179,84 @@ public abstract class AbstractDialogFragmentManager
         requireNotNull(dialog, "dialog is null");
         requireNull(dialog.getTag(), "dialog.getTag() is not null");
 
-        // Replace active Dialog on main thread
-        ThreadUtils.runOnUiThreadBlocking(() -> replaceActiveDialog(dialog));
+        // Replace last known Dialog
+        replaceDialogOnUiThreadBlocking(dialog);
     }
 
 // MARK: - Private Methods
 
-    private void replaceActiveDialog(DialogFragment dialog) {
-        requireTrue(ThreadUtils.runningOnUiThread(), "This method must execute on the main thread only!");
+    private void replaceDialogOnUiThreadBlocking(final DialogFragment dialog) {
+        ThreadUtils.runOnUiThreadBlocking(() -> {
 
-        final String uniqueTag = StringUtils.emptyToNull(mLastKnownUniqueTag);
+            DialogFragment lastKnownDialog = findDialogByTag(mLastKnownUniqueTag);
+
+            // Update existing ProgressDialog
+            if ((lastKnownDialog instanceof ProgressDialogFragment) && (dialog instanceof ProgressDialogFragment)) {
+
+                ProgressDialogFragment dialogOld = (ProgressDialogFragment) lastKnownDialog;
+                ProgressDialogFragment dialogNew = (ProgressDialogFragment) dialog;
+
+                // Replace message
+                CharSequence message = dialogNew.getMessage();
+                if (StringUtils.isNotBlank(message)) {
+                    dialogOld.setMessage(message);
+                }
+
+                // Replace listener
+                dialogOld.setDialogListener(dialogNew.getDialogListener());
+            }
+            // Replace/Dismiss last known Dialog
+            else {
+
+                if (dialog != null) {
+                    mLastKnownUniqueTag = newUniqueTag();
+                    dialog.show(mActivity.getSupportFragmentManager(), mLastKnownUniqueTag);
+                }
+                else {
+                    mLastKnownUniqueTag = null;
+                }
+
+                if (lastKnownDialog != null) {
+                    lastKnownDialog.dismiss();
+                }
+            }
+        });
+    }
+
+    private void dismissDialogOnUiThreadBlocking(final String tag) {
+        ThreadUtils.runOnUiThreadBlocking(() -> {
+
+            if (StringUtils.isBlank(tag)) {
+                return;
+            }
+
+            // Dismiss active Dialog
+            DialogFragment dialog = findDialogByTag(tag);
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+
+            // Forget last known Dialog if tags is equal
+            if (tag.equals(mLastKnownUniqueTag)) {
+                mLastKnownUniqueTag = null;
+            }
+        });
+    }
+
+    private DialogFragment findDialogByTag(String tag) {
         DialogFragment activeDialog = null;
 
-        if (uniqueTag != null) {
-            Fragment fragment = mActivity.getSupportFragmentManager().findFragmentByTag(uniqueTag);
+        if (StringUtils.emptyToNull(tag) != null) {
+            Fragment fragment = mActivity.getSupportFragmentManager().findFragmentByTag(tag);
+
             if (fragment instanceof DialogFragment) {
                 activeDialog = (DialogFragment) fragment;
             }
         }
-
-        // Update existing ProgressDialog
-        if ((activeDialog instanceof ProgressDialogFragment) && (dialog instanceof ProgressDialogFragment)) {
-
-            ProgressDialogFragment dialogOld = (ProgressDialogFragment) activeDialog;
-            ProgressDialogFragment dialogNew = (ProgressDialogFragment) dialog;
-
-            // Replace message
-            CharSequence message = dialogNew.getMessage();
-            if (StringUtils.isNotBlank(message)) {
-                dialogOld.setMessage(message);
-            }
-
-            // Replace listener
-            dialogOld.setDialogListener(dialogNew.getDialogListener());
-        }
-        // Replace active Dialog
-        else if (dialog != null) {
-
-            mLastKnownUniqueTag = newUniqueTag();
-            dialog.show(mActivity.getSupportFragmentManager(), mLastKnownUniqueTag);
-        }
-        // Dismiss active Dialog
-        else {
-
-            mLastKnownUniqueTag = null;
-            if (activeDialog != null) {
-                activeDialog.dismiss();
-            }
-        }
+        return activeDialog;
     }
 
-    private String newUniqueTag() {
+    private static String newUniqueTag() {
         return CommonKeys.URN + ":fragment_tag." + UUID.randomUUID().toString();
     }
 
