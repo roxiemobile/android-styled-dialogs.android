@@ -1,5 +1,6 @@
 package com.roxiemobile.androidstyleddialogs.core.manager;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -216,8 +217,9 @@ public abstract class AbstractDialogFragmentManager
                     mLastKnownUniqueTag = null;
                 }
 
+                // Dismiss last known Dialog without flashing of a background
                 if (lastKnownDialog != null) {
-                    lastKnownDialog.dismiss();
+                    mHandler.postDelayed(lastKnownDialog::dismiss, 100);
                 }
             }
         });
@@ -265,4 +267,6 @@ public abstract class AbstractDialogFragmentManager
     private @NonNull FragmentActivity mActivity;
 
     private String mLastKnownUniqueTag;
+
+    private @NonNull Handler mHandler = new Handler(ThreadUtils.getUiThreadLooper());
 }
