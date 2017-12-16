@@ -29,9 +29,12 @@ import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
 import com.avast.android.dialogs.util.SparseBooleanArrayParcelable;
 import com.roxiemobile.androidstyleddialogs.R;
 
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Dialog with a list of options.
@@ -367,6 +370,7 @@ public class ListDialogFragment extends BaseDialogFragment {
         return getArguments().getCharSequence(ARG_NEGATIVE_BUTTON);
     }
 
+    @Retention(SOURCE)
     @IntDef({AbsListView.CHOICE_MODE_MULTIPLE, AbsListView.CHOICE_MODE_SINGLE, AbsListView.CHOICE_MODE_NONE})
     public @interface ChoiceMode {
     }
