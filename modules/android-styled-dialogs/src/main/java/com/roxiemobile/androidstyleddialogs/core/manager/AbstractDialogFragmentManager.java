@@ -10,6 +10,7 @@ import com.avast.android.dialogs.fragment.ProgressDialogFragment;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.roxiemobile.androidcommons.concurrent.ThreadUtils;
 import com.roxiemobile.androidcommons.data.CommonKeys;
+import com.roxiemobile.androidcommons.diagnostics.Guard;
 import com.roxiemobile.androidcommons.util.StringUtils;
 import com.roxiemobile.androidstyleddialogs.R;
 import com.roxiemobile.androidstyleddialogs.ui.dialog.ProgressDialogListener;
@@ -17,15 +18,12 @@ import com.roxiemobile.androidstyleddialogs.ui.dialog.SimpleDialogListener;
 
 import java.util.UUID;
 
-import static com.roxiemobile.androidcommons.diagnostics.Require.requireNotNull;
-import static com.roxiemobile.androidcommons.diagnostics.Require.requireNull;
-
 public abstract class AbstractDialogFragmentManager
 {
 // MARK: - Construction
 
     public AbstractDialogFragmentManager(@NonNull FragmentActivity activity) {
-        requireNotNull(activity, "activity is null");
+        Guard.notNull(activity, "activity is null");
 
         // Init instance variables
         mActivity = activity;
@@ -70,7 +68,7 @@ public abstract class AbstractDialogFragmentManager
     }
 
     public void showAlertDialog(CharSequence title, @NonNull CharSequence message, boolean cancelable, final SimpleDialogListener listener) {
-        requireNotNull(message, "message is null");
+        Guard.notNull(message, "message is null");
 
         final SimpleDialogFragment.SimpleDialogBuilder builder = SimpleDialogFragment.createBuilder(
                 mActivity, mActivity.getSupportFragmentManager());
@@ -119,7 +117,7 @@ public abstract class AbstractDialogFragmentManager
     }
 
     public void showYesNoDialog(CharSequence title, @NonNull CharSequence message, boolean cancelable, final SimpleDialogListener listener) {
-        requireNotNull(message, "message is null");
+        Guard.notNull(message, "message is null");
 
         final SimpleDialogFragment.SimpleDialogBuilder builder = SimpleDialogFragment.createBuilder(
                 mActivity, mActivity.getSupportFragmentManager());
@@ -159,7 +157,7 @@ public abstract class AbstractDialogFragmentManager
     }
 
     public void showProgressDialog(@NonNull CharSequence message, boolean cancelable, final ProgressDialogListener listener) {
-        requireNotNull(message, "message is null");
+        Guard.notNull(message, "message is null");
 
         final ProgressDialogFragment.ProgressDialogBuilder builder = ProgressDialogFragment.createBuilder(
                 mActivity, mActivity.getSupportFragmentManager());
@@ -177,8 +175,8 @@ public abstract class AbstractDialogFragmentManager
 // MARK: - Methods: CustomDialog
 
     public void showCustomDialog(@NonNull DialogFragment dialog) {
-        requireNotNull(dialog, "dialog is null");
-        requireNull(dialog.getTag(), "dialog.getTag() is not null");
+        Guard.notNull(dialog, "dialog is null");
+        Guard.isNull(dialog.getTag(), "dialog.getTag() is not null");
 
         // Replace last known Dialog
         replaceDialogOnUiThreadBlocking(dialog);
