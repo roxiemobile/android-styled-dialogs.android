@@ -8,8 +8,9 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
-        versionName '0.8.2'
+
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
     }
 
     compileOptions {
@@ -35,8 +36,8 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
 
     // Material Design (Roxie Mobile)
-    final RXM_MATERIAL_DESIGN_VERSION = rootProject.ext.RXM_MATERIAL_DESIGN_VERSION
-    api "com.roxiemobile.android:material-design:$RXM_MATERIAL_DESIGN_VERSION"
+    final ROXIE_MATERIAL_DESIGN_VERSION = rootProject.ext.ROXIE_MATERIAL_DESIGN_VERSION
+    api "com.roxiemobile.android:material-design:$ROXIE_MATERIAL_DESIGN_VERSION"
 
     // JUnit
     final JUNIT_VERSION = rootProject.ext.JUNIT_VERSION
