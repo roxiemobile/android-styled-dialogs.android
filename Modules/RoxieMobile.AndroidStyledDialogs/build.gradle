@@ -23,6 +23,11 @@ allprojects {
         google()
         jcenter()
     }
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
 }
 
 // Controlling Android properties of all your modules from the main project

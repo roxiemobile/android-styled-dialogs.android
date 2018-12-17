@@ -123,6 +123,6 @@ public abstract class BaseDialogBuilder<T extends BaseDialogBuilder<T>> {
 
     @SuppressWarnings("UnusedParameters")
     protected void prepareDialogFragment(BaseDialogFragment fragment) {
-        // do nothing ..
+        // Do nothing
     }
 }

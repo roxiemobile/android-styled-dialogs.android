@@ -1,6 +1,7 @@
 package com.avast.android.dialogs.fragment;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.widget.TimePicker;
 
@@ -28,6 +29,7 @@ public class TimePickerDialogFragment extends DatePickerDialogFragment {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected BaseDialogFragment.Builder build(BaseDialogFragment.Builder builder) {
         builder = super.build(builder);
         mTimePicker = (TimePicker) builder.getLayoutInflater().inflate(R.layout.sdl_timepicker, null);
@@ -38,14 +40,27 @@ public class TimePickerDialogFragment extends DatePickerDialogFragment {
         mCalendar = Calendar.getInstance(zone);
         mCalendar.setTimeInMillis(getArguments().getLong(ARG_DATE, System.currentTimeMillis()));
 
-        mTimePicker.setCurrentHour(mCalendar.get(Calendar.HOUR_OF_DAY));
-        mTimePicker.setCurrentMinute(mCalendar.get(Calendar.MINUTE));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mTimePicker.setHour(mCalendar.get(Calendar.HOUR_OF_DAY));
+            mTimePicker.setMinute(mCalendar.get(Calendar.MINUTE));
+        }
+        else {
+            mTimePicker.setCurrentHour(mCalendar.get(Calendar.HOUR_OF_DAY));
+            mTimePicker.setCurrentMinute(mCalendar.get(Calendar.MINUTE));
+        }
         return builder;
     }
 
+    @SuppressWarnings("deprecation")
     public Date getDate() {
-        mCalendar.set(Calendar.HOUR_OF_DAY, mTimePicker.getCurrentHour());
-        mCalendar.set(Calendar.MINUTE, mTimePicker.getCurrentMinute());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mCalendar.set(Calendar.HOUR_OF_DAY, mTimePicker.getHour());
+            mCalendar.set(Calendar.MINUTE, mTimePicker.getMinute());
+        }
+        else {
+            mCalendar.set(Calendar.HOUR_OF_DAY, mTimePicker.getCurrentHour());
+            mCalendar.set(Calendar.MINUTE, mTimePicker.getCurrentMinute());
+        }
         return mCalendar.getTime();
     }
 }

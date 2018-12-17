@@ -17,6 +17,7 @@
 package com.avast.android.dialogs.fragment;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
@@ -33,6 +34,8 @@ import com.avast.android.dialogs.iface.ISimpleDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.support.v4.text.HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE;
 
 
 /**
@@ -246,8 +249,16 @@ public class SimpleDialogFragment extends BaseDialogFragment {
          * Allow to set resource string with HTML formatting and bind %s,%i.
          * This is workaround for https://code.google.com/p/android/issues/detail?id=2923
          */
+        @SuppressWarnings("deprecation")
         public SimpleDialogBuilder setMessage(int resourceId, Object... formatArgs) {
-            mMessage = Html.fromHtml(String.format(Html.toHtml(new SpannedString(mContext.getText(resourceId))), formatArgs));
+            String format;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                format = Html.toHtml(new SpannedString(mContext.getText(resourceId)), TO_HTML_PARAGRAPH_LINES_CONSECUTIVE);
+            }
+            else {
+                format = Html.toHtml(new SpannedString(mContext.getText(resourceId)));
+            }
+            mMessage = Html.fromHtml(String.format(format, formatArgs));
             return this;
         }
 
