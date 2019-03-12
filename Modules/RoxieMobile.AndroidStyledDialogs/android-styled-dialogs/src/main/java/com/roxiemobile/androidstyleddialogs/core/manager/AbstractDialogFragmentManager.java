@@ -209,7 +209,7 @@ public abstract class AbstractDialogFragmentManager
 
                 if (dialog != null) {
                     mLastKnownUniqueTag = newUniqueTag();
-                    dialog.show(mActivity.getSupportFragmentManager(), mLastKnownUniqueTag);
+                    dialog.showNow(mActivity.getSupportFragmentManager(), mLastKnownUniqueTag);
                 }
                 else {
                     mLastKnownUniqueTag = null;
